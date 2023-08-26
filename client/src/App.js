@@ -1,19 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { MdClose } from 'react-icons/md';
-import axios from 'axios'
+import axios from 'axios';
+import Formtable from './component/Form';
 
-axios.defaults.baseURL = "http://localhost:8080/"
+axios.defaults.baseURL = "http://localhost:8080/";
 
 function App() {
   const [addSection, setAddSection] = useState(false);
+  const [editSection, setEditSection] = useState(false);
+  const [dataList, setDataList] = useState([]);
+  const [formDataEdit, setFormDataEdit] = useState({
+    name: '',
+    email: '',
+    mobile: '',
+    _id: '',
+
+  });
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     mobile: '',
   });
 
-  const [dataList, setDataList] = useState([])
+
 
   const handleOnChange = (e) => {
     const { value, name } = e.target;
@@ -25,29 +34,62 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = await axios.post('/create', formData)
-    // You can do something with formData here, e.g., send it to an API
+    const data = await axios.post('/create', formData);
     console.log(data);
     if (data.data.success) {
-      setAddSection(false)
-      alert(data.data.message)
+      setAddSection(false);
+      alert(data.data.message);
+      getFatchData();
+      setFormData({
+        name: '',
+        email: '',
+        mobile: '',
+      })
     }
   };
 
   const getFatchData = async () => {
-    const data = await axios.get('/')
+    const data = await axios.get('/');
     console.log(data);
     if (data.data.success) {
-      setDataList(data.data.data)
-      // alert(data.data.message)
+      setDataList(data.data.data);
     }
-  }
+  };
 
   useEffect(() => {
-    getFatchData()
-  }, [])
-  console.log(dataList)
+    getFatchData();
+  }, []); // Call getFatchData() only when the component mounts
 
+  const handleDelete = async (id) => {
+    const data = await axios.delete('/delete/' + id);
+    if (data.data.success) {
+      getFatchData();
+      alert(data.data.message);
+    }
+  };
+
+  const handleUpdate = async(e) => {
+    e.preventDefault()
+    const data = await axios.put('/update/',formDataEdit);
+    if (data.data.success) {
+      getFatchData();
+      alert(data.data.message);
+      setEditSection(false)
+    }
+  };
+
+  const handleEditOnChange = async (e)=>{
+    const { value, name } = e.target;
+    setFormDataEdit((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
+
+  const handleEdit = async(el)=>{
+    setFormDataEdit(el)
+    setEditSection(true)
+  }
 
   return (
     <>
@@ -56,27 +98,23 @@ function App() {
           Add
         </button>
         {addSection && (
-          <div className="add-container">
-            <form onSubmit={handleSubmit}>
-              <div className="close-btn" onClick={() => setAddSection(false)}>
-                <MdClose />
-              </div>
-
-              <label htmlFor="name">Name :</label>
-              <input type="text" id="name" name="name" onChange={handleOnChange} />
-
-              <label htmlFor="email">Email :</label>
-              <input type="email" id="email" name="email" onChange={handleOnChange} />
-
-              <label htmlFor="mobile">Mobile :</label>
-              <input type="number" id="mobile" name="mobile" onChange={handleOnChange} />
-
-              <button className="btn" type="submit">
-                Submit
-              </button>
-            </form>
-          </div>
+          <Formtable
+            handleSubmit={handleSubmit}
+            handleOnChange={handleOnChange}
+            handleclose={() => setAddSection(false)}
+            rest={formData}
+          />
         )}
+        {
+          editSection && (
+            <Formtable
+            handleSubmit={handleUpdate}
+            handleOnChange={handleEditOnChange}
+            handleclose={() => setEditSection(false)}
+            rest={formDataEdit}
+          />
+          )
+        }
 
         <div className='table-container'>
           <table>
@@ -89,25 +127,28 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              {
+              {dataList.length ? (
                 dataList.map((el) => {
                   return (
-                    <tr>
+                    <tr key={el._id}>
                       <td>{el.name}</td>
                       <td>{el.email}</td>
                       <td>{el.mobile}</td>
                       <td>
-                      <button className="btn btn-edit ">Edit</button>
-                      <button className="btn btn-delete ">Delete</button>
+                        <button className="btn btn-edit" onClick={()=>handleEdit(el)}>Edit</button>
+                        <button className="btn btn-delete" onClick={() => handleDelete(el._id)}>Delete</button>
                       </td>
                     </tr>
                   )
                 })
-              }
+              ) : (
+                <tr>
+                  <td colSpan="4">No data</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
-
       </div>
     </>
   );
