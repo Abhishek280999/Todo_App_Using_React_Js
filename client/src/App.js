@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import axios from 'axios';
 import Formtable from './component/Form';
+import {AiFillDelete} from 'react-icons/ai'
+import {GrEdit} from 'react-icons/gr'
+
+
 
 axios.defaults.baseURL = "http://localhost:8080/";
 
@@ -135,8 +139,8 @@ function App() {
                       <td>{el.email}</td>
                       <td>{el.mobile}</td>
                       <td>
-                        <button className="btn btn-edit" onClick={()=>handleEdit(el)}>Edit</button>
-                        <button className="btn btn-delete" onClick={() => handleDelete(el._id)}>Delete</button>
+                        <button className="btn btn-edit" onClick={()=>handleEdit(el)}><GrEdit/>Edit</button>
+                        <button className="btn btn-delete" onClick={() => handleDelete(el._id)}><AiFillDelete/> Delete</button>
                       </td>
                     </tr>
                   )
