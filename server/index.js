@@ -74,15 +74,23 @@ app.delete("/delete/:id", async (req ,res)=>{
 
 })
 
+const mongoURI = "mongodb+srv://crudoperation:VXMh6z0tQnYSxfIB@cluster0.bnmnh5e.mongodb.net/crudoperation";
 
-const data = "mongodb+srv://crudoperation:VXMh6z0tQnYSxfIB@cluster0.bnmnh5e.mongodb.net/"
+mongoose.connect(mongoURI)
+  .then(() => {
+    console.log("Connected to MongoDB");
+    app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+  })
+  .catch((err) => console.error(err));
 
-// mongoose.connect("mongodb://127.0.0.1/crudoperation")
-mongoose.connect(data)
+// const data = "mongodb+srv://crudoperation:VXMh6z0tQnYSxfIB@cluster0.bnmnh5e.mongodb.net/"
 
-    .then(() => {
-        console.log("connect to DB")
-        app.listen(PORT, () => console.log("server is running successfully"))
+// // mongoose.connect("mongodb://127.0.0.1/crudoperation")
+// mongoose.connect(data)
 
-    })
-    .catch((err) => console.log(err))
+//     .then(() => {
+//         console.log("connect to DB")
+//         app.listen(PORT, () => console.log("server is running successfully"))
+
+//     })
+//     .catch((err) => console.log(err))
