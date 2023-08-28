@@ -75,9 +75,10 @@ app.delete("/delete/:id", async (req ,res)=>{
 })
 
 
+const data = "mongodb+srv://crudoperation:VXMh6z0tQnYSxfIB@cluster0.bnmnh5e.mongodb.net/"
 
 // mongoose.connect("mongodb://127.0.0.1/crudoperation")
-mongoose.connect("mongodb+srv://crudoperation:VXMh6z0tQnYSxfIB@cluster0.bnmnh5e.mongodb.net/")
+mongoose.connect(data)
 
     .then(() => {
         console.log("connect to DB")
