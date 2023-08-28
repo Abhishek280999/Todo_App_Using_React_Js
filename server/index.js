@@ -76,7 +76,9 @@ app.delete("/delete/:id", async (req ,res)=>{
 
 
 
-mongoose.connect("mongodb://127.0.0.1/crudoperation")
+// mongoose.connect("mongodb://127.0.0.1/crudoperation")
+mongoose.connect("mongodb+srv://crudoperation:VXMh6z0tQnYSxfIB@cluster0.bnmnh5e.mongodb.net/")
+
     .then(() => {
         console.log("connect to DB")
         app.listen(PORT, () => console.log("server is running successfully"))
